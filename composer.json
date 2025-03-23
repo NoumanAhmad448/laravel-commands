@@ -1,0 +1,33 @@
+{
+    "name": "eren/laravel-commands",
+    "description": "Laravel all custom commands for daily development",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Eren\\LaravelCommands\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Eren",
+            "email": "nouman.laravel@outlook.com"
+        }
+    ],
+    "require": {
+        "laravel/framework": "9.52.17"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Eren\\LaravelCommands\\Providers\\LCServiceProvider"
+            ]
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.6",
+        "orchestra/testbench": "^7.47"
+    },
+    "version": "1.0",
+    "minimum-stability": "stable"
+}
