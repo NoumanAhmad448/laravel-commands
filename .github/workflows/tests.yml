@@ -47,6 +47,11 @@ jobs:
       - name: Copy Local Package
         run: rsync -av --exclude='laravel-test-project' ./ laravel-test-project/packages/eren/laravel-commands/
 
+      - name: checked copied files
+        run: |
+          ls -l laravel-test-project/packages/eren/laravel-commands/
+          ls -l laravel-test-project/packages/eren/laravel-commands/src
+
       - name: Link Local Package
         working-directory: laravel-test-project
         run: |
