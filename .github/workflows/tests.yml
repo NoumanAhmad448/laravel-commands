@@ -63,7 +63,7 @@ jobs:
       - name: Modify phpunit.xml to Include Package Tests
         run: |
           # sed -i '/<\/testsuite>/i\        <directory suffix="Test.php">packages/eren/laravel-commands/src/Tests</directory>' phpunit.xml
-          rsync -av --exclude='laravel-test-project' ./src/Tests/ laravel-test-project/tests/Unit
+          rsync -av --exclude='laravel-test-project' ./src/Tests/ laravel-test-project/tests/Feature
 
       - name: Run Tests
         working-directory: laravel-test-project
