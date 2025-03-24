@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        laravel: [9.*]  # Laravel versions to test
+        laravel: [9.52.20]  # Laravel versions to test
         php: [8.1, 8.2]  # PHP versions to test
 
     steps:
