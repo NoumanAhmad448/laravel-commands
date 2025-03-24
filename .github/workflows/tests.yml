@@ -38,6 +38,8 @@ jobs:
       - name: updating laravel
         working-directory: laravel-test-project
         run: |
+          composer require phpunit/phpunit
+          composer require --dev orchestra/testbench:^6.0
           composer update laravel/framework
 
       - name: Copy Local Package
