@@ -41,6 +41,7 @@ jobs:
           composer update laravel/framework
 
       - name: Laravel version
+        working-directory: laravel-test-project
         run: composer show laravel/framework
 
       - name: Copy Local Package
