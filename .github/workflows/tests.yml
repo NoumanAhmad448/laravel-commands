@@ -51,6 +51,8 @@ jobs:
         run: |
           ls -l laravel-test-project/packages/eren/laravel-commands/
           ls -l laravel-test-project/packages/eren/laravel-commands/src
+          ls -l laravel-test-project/packages/eren/laravel-commands/src/Commands
+          ls -l laravel-test-project/packages/eren/laravel-commands/src/Providers
 
       - name: Link Local Package
         working-directory: laravel-test-project
