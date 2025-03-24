@@ -1,6 +1,6 @@
 <?php
 
-namespace Eren\LaravelCommands\Tests;
+namespace Tests;
 
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
