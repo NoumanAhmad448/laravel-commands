@@ -4,6 +4,8 @@ namespace Eren\LaravelCommands\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Eren\LaravelCommands\Commands\CreateContractAndResponse;
+use Eren\LaravelCommands\Commands\CustomStorageLink;
+use Eren\LaravelCommands\Commands\DeleteAllFiles;
 
 class LCServiceProvider extends ServiceProvider
 {
@@ -14,6 +16,8 @@ class LCServiceProvider extends ServiceProvider
     {
         $this->commands([
             CreateContractAndResponse::class,
+            CustomStorageLink::class,
+            DeleteAllFiles::class,
         ]);
     }
 

@@ -6,9 +6,18 @@ on:
   pull_request:
     branches: [master]
 
+permissions:
+  contents: write # Allows the workflow to push changes
+  actions: read # Allows reading action logs
+  pull-requests: write # Enables PR creation and updates
+
 jobs:
   tests:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        laravel: [9.*, 10.*]  # Laravel versions to test
+        php: [8.1, 8.2, 8.3]  # PHP versions to test
 
     steps:
       - name: Checkout code
@@ -17,12 +26,53 @@ jobs:
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: "8.1"
+          php-version: ${{ matrix.php }}
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite
           coverage: none
 
-      - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest
+      - name: Create Laravel ${{ matrix.laravel }}
+        run: |
+          composer create-project --prefer-dist laravel/laravel laravel-test-project "${{ matrix.laravel }}" --no-interaction
+          mkdir -p laravel-test-project/packages/eren/laravel-commands
 
-      # - name: Run tests
-      #   run: ./vendor/bin/phpunit
+      - name: updating laravel
+        working-directory: laravel-test-project
+        run: |
+          composer update laravel/framework
+
+      - name: Laravel version
+        working-directory: laravel-test-project
+        run: composer show laravel/framework
+
+      - name: Copy Local Package
+        run: rsync -av --exclude='laravel-test-project' ./ laravel-test-project/packages/eren/laravel-commands/
+
+      - name: checked copied files
+        run: |
+          ls -l laravel-test-project/packages/eren/laravel-commands/
+          ls -l laravel-test-project/packages/eren/laravel-commands/src
+          ls -l laravel-test-project/packages/eren/laravel-commands/src/Commands
+          ls -l laravel-test-project/packages/eren/laravel-commands/src/Providers
+
+      - name: Link Local Package
+        working-directory: laravel-test-project
+        run: |
+          composer config repositories.local '{"type": "path", "url": "packages/eren/laravel-commands", "options": {"symlink": true}}'
+          composer require eren/laravel-commands --no-interaction --no-progress
+
+      - name: Prepare Laravel Environment
+        working-directory: laravel-test-project
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+          php artisan config:clear
+
+      - name: Modify phpunit.xml to Include Package Tests
+        run: |
+          # sed -i '/<\/testsuite>/i\        <directory suffix="Test.php">packages/eren/laravel-commands/src/Tests</directory>' phpunit.xml
+          rsync -av --exclude='laravel-test-project' ./src/Tests/ laravel-test-project/tests/Feature
+
+      - name: Run Tests
+        working-directory: laravel-test-project
+        run: |
+          php artisan test

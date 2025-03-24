@@ -15,7 +15,8 @@ class CreateContractAndResponse extends Command
      * @var string
      */
     protected $signature = 'make:contract-response {name : The name of the contract and response (e.g., Auth)}
-                {--provider=HomeController1Provider : The name of the service provider to bind the contract and response}';
+                {--provider=HomeController1Provider : The name of the service provider to bind the contract and response}
+                {--test : In order to test the command}';
     /**
      * The console command description.
      *
@@ -60,7 +61,9 @@ class CreateContractAndResponse extends Command
         $this->createResponse($responseName, $contractName);
 
         // Bind Contract and Response in the service provider
-        $this->bindContractAndResponse($contractName, $responseName);
+        if(!$this->option('test')){
+            $this->bindContractAndResponse($contractName, $responseName);
+        }
 
         $this->info("Contract, Response, and binding created successfully!");
     }
@@ -119,8 +122,7 @@ class CreateContractAndResponse extends Command
     protected function bindContractAndResponse($contractName, $responseName)
     {
         $providerName = $this->option('provider');
-        $providerPath = base_path("app/Providers/{$providerName}.php");
-
+        $providerPath = app_path("Providers/{$providerName}.php");
 
         if (!$this->files->exists($providerPath)) {
             $this->info("Service provider {$providerName} not found. Creating one....");
