@@ -32,32 +32,26 @@ jobs:
       - name: Create Laravel Project
         run: |
           composer create-project laravel/laravel laravel-test-project --no-interaction --no-progress
-          cd laravel-test-project
-          mkdir -p packages/eren-laravel-commands
-          cd ..
+          mkdir -p laravel-test-project/packages/eren-laravel-commands
 
       - name: Copy Local Package
         run: cp -r . laravel-test-project/packages/eren-laravel-commands
 
       - name: Link Local Package
         run: |
-          cd laravel-test-project
           composer config repositories.local '{"type": "path", "url": "packages/eren-laravel-commands", "options": {"symlink": true}}'
           composer require eren/laravel-commands:@dev --no-interaction --no-progress
 
       - name: Prepare Laravel Environment
         run: |
-          cd laravel-test-project
           cp .env.example .env
           php artisan key:generate
           php artisan config:clear
 
       - name: Modify phpunit.xml to Include Package Tests
         run: |
-          cd laravel-test-project
           sed -i '/<\/testsuite>/i\        <directory suffix="Test.php">./packages/eren-laravel-commands/src/tests</directory>' phpunit.xml
 
       - name: Run Tests
         run: |
-          cd laravel-test-project
           php artisan test
