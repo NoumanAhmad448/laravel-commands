@@ -14,6 +14,10 @@ permissions:
 jobs:
   tests:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        laravel: [9.*]  # Laravel versions to test
+        php: [8.0, 8.1, 8.2]  # PHP versions to test
 
     steps:
       - name: Checkout code
@@ -22,16 +26,16 @@ jobs:
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: "8.1"
+          php-version: ${{ matrix.php }}
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite
           coverage: none
 
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress --no-suggest
 
-      - name: Create Laravel Project
+      - name: Create Laravel ${{ matrix.laravel }}
         run: |
-          composer create-project laravel/laravel laravel-test-project --no-interaction --no-progress
+          composer create-project --prefer-dist laravel/laravel laravel-test-project "${{ matrix.laravel }}" --no-interaction
           mkdir -p laravel-test-project/packages/eren-laravel-commands
 
       - name: Copy Local Package
