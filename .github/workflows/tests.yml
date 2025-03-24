@@ -59,7 +59,7 @@ jobs:
       - name: Modify phpunit.xml to Include Package Tests
         working-directory: laravel-test-project
         run: |
-          sed -i '/<\/testsuite>/i\        <directory suffix="Test.php">packages/eren/laravel-commands/src/tests</directory>' phpunit.xml
+          sed -i '/<\/testsuite>/i\        <directory suffix="Test.php">packages/eren/laravel-commands/src/Tests</directory>' phpunit.xml
 
       - name: Run Tests
         working-directory: laravel-test-project
