@@ -30,9 +30,6 @@ jobs:
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite
           coverage: none
 
-      - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest
-
       - name: Create Laravel ${{ matrix.laravel }}
         run: |
           composer create-project --prefer-dist laravel/laravel laravel-test-project "${{ matrix.laravel }}" --no-interaction
@@ -67,5 +64,4 @@ jobs:
       - name: Run Tests
         working-directory: laravel-test-project
         run: |
-          cd laravel-test-project
           php artisan test
