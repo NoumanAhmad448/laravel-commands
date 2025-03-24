@@ -29,16 +29,13 @@ jobs:
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress --no-suggest
 
-      - name: Copy Local Package
-        run: cp -r . backup
-
       - name: Create Laravel Project
         run: |
           composer create-project laravel/laravel laravel-test-project --no-interaction --no-progress
           mkdir -p laravel-test-project/packages/eren-laravel-commands
 
       - name: Copy Local Package
-        run: cp -r backup laravel-test-project/packages/eren-laravel-commands
+        run: rsync -av --exclude='laravel-test-project' ./ laravel-test-project/packages/eren-laravel-commands/
 
       - name: Link Local Package
         run: |
