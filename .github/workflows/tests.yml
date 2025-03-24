@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        laravel: [9.52.17]  # Laravel versions to test
+        laravel: [9.*]  # Laravel versions to test
         php: [8.1, 8.2]  # PHP versions to test
 
     steps:
@@ -37,6 +37,11 @@ jobs:
         run: |
           composer create-project --prefer-dist laravel/laravel laravel-test-project "${{ matrix.laravel }}" --no-interaction
           mkdir -p laravel-test-project/packages/eren-laravel-commands
+
+      - name: updating laravel
+        working-directory: laravel-test-project
+        run: |
+          composer update laravel/framework
 
       - name: Copy Local Package
         run: rsync -av --exclude='laravel-test-project' ./ laravel-test-project/packages/eren-laravel-commands/

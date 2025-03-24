@@ -14,9 +14,6 @@
             "email": "nouman.laravel@outlook.com"
         }
     ],
-    "require": {
-        "laravel/framework": "9.52.17"
-    },
     "extra": {
         "laravel": {
             "providers": [
