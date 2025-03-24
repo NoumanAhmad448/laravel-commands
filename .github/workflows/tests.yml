@@ -38,8 +38,8 @@ jobs:
       - name: updating laravel
         working-directory: laravel-test-project
         run: |
-          composer require --dev orchestra/testbench:^6.0
           composer update laravel/framework
+          composer require --dev orchestra/testbench:^6.0
 
       - name: Copy Local Package
         run: rsync -av --exclude='laravel-test-project' ./ laravel-test-project/packages/eren/laravel-commands/
