@@ -33,7 +33,7 @@ jobs:
       - name: Create Laravel ${{ matrix.laravel }}
         run: |
           composer create-project --prefer-dist laravel/laravel laravel-test-project "${{ matrix.laravel }}" --no-interaction
-          mkdir -p laravel-test-project/packages/eren-laravel-commands
+          mkdir -p laravel-test-project/packages/eren/laravel-commands
 
       - name: updating laravel
         working-directory: laravel-test-project
@@ -41,12 +41,12 @@ jobs:
           composer update laravel/framework
 
       - name: Copy Local Package
-        run: rsync -av --exclude='laravel-test-project' ./ laravel-test-project/packages/eren-laravel-commands/
+        run: rsync -av --exclude='laravel-test-project' ./ laravel-test-project/packages/eren/laravel-commands/
 
       - name: Link Local Package
         working-directory: laravel-test-project
         run: |
-          composer config repositories.local '{"type": "path", "url": "packages/eren-laravel-commands", "options": {"symlink": true}}'
+          composer config repositories.local '{"type": "path", "url": "packages/eren/laravel-commands", "options": {"symlink": true}}'
           composer require eren/laravel-commands:@dev --no-interaction --no-progress
 
       - name: Prepare Laravel Environment
@@ -59,7 +59,7 @@ jobs:
       - name: Modify phpunit.xml to Include Package Tests
         working-directory: laravel-test-project
         run: |
-          sed -i '/<\/testsuite>/i\        <directory suffix="Test.php">./packages/eren-laravel-commands/src/tests</directory>' phpunit.xml
+          sed -i '/<\/testsuite>/i\        <directory suffix="Test.php">./packages/eren/laravel-commands/src/tests</directory>' phpunit.xml
 
       - name: Run Tests
         working-directory: laravel-test-project
