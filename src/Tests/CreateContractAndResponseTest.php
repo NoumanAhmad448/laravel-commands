@@ -7,6 +7,10 @@ use Illuminate\Support\Facades\File;
 
 class CreateContractAndResponseTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+    }
     public function test_command_creates_contract_and_response()
     {
         // Run the command
