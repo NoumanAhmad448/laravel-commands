@@ -39,8 +39,9 @@ jobs:
         working-directory: laravel-test-project
         run: |
           composer update laravel/framework
-          composer require --dev orchestra/testbench
 
+      - name: laravel version
+        run: 
       - name: Copy Local Package
         run: rsync -av --exclude='laravel-test-project' ./ laravel-test-project/packages/eren/laravel-commands/
 
@@ -48,7 +49,7 @@ jobs:
         working-directory: laravel-test-project
         run: |
           composer config repositories.local '{"type": "path", "url": "packages/eren/laravel-commands", "options": {"symlink": true}}'
-          composer require eren/laravel-commands:@dev --no-interaction --no-progress
+          composer require eren/laravel-commands --no-interaction --no-progress
 
       - name: Prepare Laravel Environment
         working-directory: laravel-test-project

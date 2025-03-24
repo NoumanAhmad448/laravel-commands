@@ -2,12 +2,12 @@
 
 namespace Eren\LaravelCommands\Tests;
 
-use Orchestra\Testbench\TestCase as OrchestraTestCase;
+use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Eren\LaravelCommands\Providers\LCServiceProvider;
 
-
-class TestCase extends OrchestraTestCase
+abstract class TestCase extends BaseTestCase
 {
+
     protected function getPackageProviders($app)
     {
         return [
