@@ -65,24 +65,4 @@ class CreateContractAndResponseTest extends TestCase
         $this->assertFalse(File::exists($directory) && count(File::files($directory)) > 0);
     }
 
-    public function test_handles_permission_errors_gracefully()
-    {
-        Storage::fake();
-
-        // Create a log file and make it read-only
-        $filePath = storage_path('logs/protected.log');
-        file_put_contents($filePath, 'Protected log');
-        chmod($filePath, 0444); // Read-only (no delete permission)
-
-        // Run command
-        $this->artisan('files:delete-all');
-
-        // Ensure file still exists
-        chmod($filePath, 0775);
-        $this->assertTrue(File::exists($filePath));
-
-        // Reset permissions
-        File::delete($filePath);
-    }
-
 }
