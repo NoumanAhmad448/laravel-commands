@@ -83,4 +83,4 @@ jobs:
       - name: Run Tests
         working-directory: laravel-test-project
         run: |
-          php artisan test -v
+          php artisan test
