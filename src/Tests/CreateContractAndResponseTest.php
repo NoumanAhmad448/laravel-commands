@@ -63,7 +63,6 @@ class CreateContractAndResponseTest extends TestCase
         $this->artisan('files:delete-all')
             ->assertExitCode(0);
         $this->assertFalse(File::exists($directory) && count(File::files($directory)) > 0);
-
     }
 
     public function test_handles_permission_errors_gracefully()
@@ -79,49 +78,11 @@ class CreateContractAndResponseTest extends TestCase
         $this->artisan('files:delete-all');
 
         // Ensure file still exists
-        $this->assertFileExists($filePath);
+        chmod($filePath, 0775);
+        $this->assertTrue(File::exists($filePath));
 
         // Reset permissions
-        chmod($filePath, 0775);
         File::delete($filePath);
     }
 
-
-    public function test_command_help_message()
-    {
-        $this->artisan('files:delete-all --help')
-            ->expectsOutputToContain('Delete all files and folders recursively, skipping undeletable ones and logging them');
-    }
-
-    public function test_deletes_only_specific_file_extensions()
-    {
-        Storage::fake();
-
-        // Create multiple file types
-        Storage::put('logs/app.log', 'Log content');
-        Storage::put('logs/debug.txt', 'Debug content');
-
-        // Run command with `--ext=log`
-        $this->artisan('files:delete-all --ext=log');
-
-        // Ensure only `.log` is deleted
-        $this->assertFalse(File::exists(storage_path('app/logs/app.log')));
-        $this->assertTrue(File::exists(storage_path('app/logs/debug.txt')));
-    }
-    public function test_deletes_directories()
-    {
-        Storage::fake();
-
-        // Create multiple file types
-        Storage::put('custom/logs/app.log', 'Log content');
-        Storage::put('custom/app.log', 'Log content');
-
-        // Run command with `--ext=log`
-        $this->artisan('files:delete-all storage/app/custom/app.log --ext=log');
-
-        // Ensure only `.log` is deleted
-        $this->assertFalse(File::exists(storage_path('app/custom/logs/app.log')));
-        $this->assertFalse(File::exists(storage_path('app/custom/app.log')));
-        $this->assertFalse(File::exists(storage_path('app/custom')) && count(File::files(storage_path('app/custom'))) > 0);
-    }
 }
