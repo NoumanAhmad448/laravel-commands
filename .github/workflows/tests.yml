@@ -44,6 +44,14 @@ jobs:
         working-directory: laravel-test-project
         run: composer show laravel/framework
 
+      - name: Laravel version
+        working-directory: laravel-test-project
+        run: yes | sudo chmod -R 777 storage/ bootstrap/cache
+
+      - name: Laravel version
+        working-directory: laravel-test-project
+        run: sudo ls -l storage/ bootstrap/cache
+
       - name: Copy Local Package
         run: rsync -av --exclude='laravel-test-project' ./ laravel-test-project/packages/eren/laravel-commands/
 
