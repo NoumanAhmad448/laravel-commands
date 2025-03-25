@@ -7,14 +7,16 @@ use Illuminate\Support\Facades\File;
 
 class DeleteAllFiles extends Command
 {
-    protected $signature = 'files:delete-all {path? : The path to delete files from}';
-    protected $description = 'Delete all files and folders recursively, skipping undeletable ones and logging them';
+    protected $signature = 'files:delete-all {path? : The path to delete files from} {--ext= : optional file extension}';
+    protected $description = 'Delete all files and folders recursively, skipping undeletable ones and logging them; only for linux and mac';
+    private $extension;
 
     public function handle()
     {
-        $path = $this->argument('path') ?? base_path();
+        $path = $this->argument('path') ?? storage_path("logs");
 
         $this->info("Deleting files and directories from: $path");
+        $this->extension = $this->option('ext'); // Get the file extension filter
 
         $rootPath = base_path($path); // Change this if you want to delete from another path
         $undeletedFiles = [];
@@ -44,7 +46,21 @@ class DeleteAllFiles extends Command
             return;
         }
 
-        $items = File::allFiles($path);
+        if ($this->extension) {
+            $extension = $this->extension;
+            // Get all files (filtered if ext is provided)
+            $items = collect(File::files(base_path($path)))
+                ->filter(function ($file) use ($extension) {
+                    return !$extension || $file->getExtension() === $extension;
+                });
+
+            if ($items->isEmpty()) {
+                $this->info('No files found to delete.');
+                return 0;
+            }
+        }else{
+            $items = File::allFiles($path);
+        }
         foreach ($items as $item) {
             try {
                 File::delete($item);
