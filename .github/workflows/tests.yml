@@ -46,11 +46,11 @@ jobs:
 
       - name: Laravel version
         working-directory: laravel-test-project
-        run: yes | sudo chmod -R 777 $GITHUB_WORKSPACE/storage/ $GITHUB_WORKSPACE/bootstrap/cache
+        run: yes | sudo chmod -R 777 storage/ bootstrap/cache
 
       - name: Laravel version
         working-directory: laravel-test-project
-        run: sudo ls -l $GITHUB_WORKSPACE/storage/ $GITHUB_WORKSPACE/bootstrap/cache
+        run: sudo ls -l storage/ bootstrap/cache
 
       - name: Copy Local Package
         run: rsync -av --exclude='laravel-test-project' ./ laravel-test-project/packages/eren/laravel-commands/
@@ -83,4 +83,4 @@ jobs:
       - name: Run Tests
         working-directory: laravel-test-project
         run: |
-          php artisan test
+          php artisan test -v
