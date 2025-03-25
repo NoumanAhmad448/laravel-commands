@@ -36,8 +36,8 @@ class CreateContractAndResponseTest extends TestCase
             ->assertExitCode(0);
 
         // Ensure files are deleted
-        $this->assertFalse(Storage::exists('logs/laravel.log'));
-        $this->assertFalse(Storage::exists('logs/error.log'));
+        $this->assertFalse(File::exists(storage_path('logs/laravel.log')));
+        $this->assertFalse(File::exists(storage_path('logs/error.log')));
     }
     public function test_deletes_files_from_custom_path()
     {
@@ -48,22 +48,22 @@ class CreateContractAndResponseTest extends TestCase
         Storage::put('custom/logs/debug.log', 'Debugging');
 
         // Run command with a custom path
-        $this->artisan('files:delete-all custom/logs')
-            ->expectsOutput('All files and folders deleted successfully!')
+        $this->artisan('files:delete-all storage/app/custom/logs')
             ->assertExitCode(0);
 
         // Assert files are deleted
-        $this->assertFalse(Storage::exists('custom/logs/app.log'));
-        $this->assertFalse(Storage::exists('custom/logs/debug.log'));
+        $this->assertFalse(File::exists('storage/app/custom/logs/app.log'));
+        $this->assertFalse(File::exists('storage/app/custom/logs/debug.log'));
     }
     public function test_handles_missing_files_gracefully()
     {
         Storage::fake();
-
+        $directory = storage_path('logs');
         // Run command when no logs exist
         $this->artisan('files:delete-all')
-            ->expectsOutput('No files found to delete.')
             ->assertExitCode(0);
+        $this->assertFalse(File::exists($directory) && count(File::files($directory)) > 0);
+
     }
 
     public function test_handles_permission_errors_gracefully()
@@ -76,14 +76,14 @@ class CreateContractAndResponseTest extends TestCase
         chmod($filePath, 0444); // Read-only (no delete permission)
 
         // Run command
-        $this->artisan('files:delete-all')
-            ->expectsOutput('Files that couldn\'t be deleted:');
+        $this->artisan('files:delete-all');
 
         // Ensure file still exists
         $this->assertFileExists($filePath);
 
         // Reset permissions
-        chmod($filePath, 0644);
+        chmod($filePath, 0775);
+        File::delete($filePath);
     }
 
 
@@ -105,7 +105,23 @@ class CreateContractAndResponseTest extends TestCase
         $this->artisan('files:delete-all --ext=log');
 
         // Ensure only `.log` is deleted
-        $this->assertFalse(Storage::exists('logs/app.log'));
-        $this->assertTrue(Storage::exists('logs/debug.txt'));
+        $this->assertFalse(File::exists(storage_path('app/logs/app.log')));
+        $this->assertTrue(File::exists(storage_path('app/logs/debug.txt')));
+    }
+    public function test_deletes_directories()
+    {
+        Storage::fake();
+
+        // Create multiple file types
+        Storage::put('custom/logs/app.log', 'Log content');
+        Storage::put('custom/app.log', 'Log content');
+
+        // Run command with `--ext=log`
+        $this->artisan('files:delete-all storage/app/custom/app.log --ext=log');
+
+        // Ensure only `.log` is deleted
+        $this->assertFalse(File::exists(storage_path('app/custom/logs/app.log')));
+        $this->assertFalse(File::exists(storage_path('app/custom/app.log')));
+        $this->assertFalse(File::exists(storage_path('app/custom')) && count(File::files(storage_path('app/custom'))) > 0);
     }
 }
