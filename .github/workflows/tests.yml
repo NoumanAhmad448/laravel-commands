@@ -30,6 +30,9 @@ jobs:
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite
           coverage: none
 
+      - name: Make sure composer.json is validated
+        run: composer validate
+
       - name: Create Laravel ${{ matrix.laravel }}
         run: |
           composer create-project --prefer-dist laravel/laravel laravel-test-project "${{ matrix.laravel }}" --no-interaction
